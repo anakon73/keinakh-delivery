@@ -1,3 +1,3 @@
-function idGenerator(): number {
+export default function idGenerator(): number {
   return parseInt(Math.random().toString().slice(2, 15))
 }
