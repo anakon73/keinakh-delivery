@@ -1,4 +1,4 @@
-import RestrauntMenuItem from '../entities/RestrauntMenuItem'
+import RestrauntMenuItem from './RestrauntMenuItem'
 
 interface IMenu {
   addItem(item: RestrauntMenuItem): void
