@@ -14,18 +14,21 @@ export default class Customer implements ICustomer {
   email: string
   adress: string
   history: Order[] = []
+  balance: number
 
   constructor(
     phone: number,
     name: string,
     email: string,
-    adress: string
+    adress: string,
+    balance: number
   ) {
     this.phone = phone
     this.email = email
     this.name = name
     this.adress = adress
     this.id = idGenerator()
+    this.balance = balance
   }
 
   createOrder(restrauntId: number): Order {
