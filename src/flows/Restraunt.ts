@@ -1,3 +1,4 @@
+import Menu from '../entities/Menu'
 import Order from '../entities/Order'
 import RestrauntMenuItem from '../entities/RestrauntMenuItem'
 
@@ -8,21 +9,21 @@ interface IRestraunt {
   denyOrder(): void
   open(): void
   close(): void
-  editMenu(): void
+  editMenu(operation: 'add' | 'remove', itemName: RestrauntMenuItem): void
 }
 
 export default class Restraunt implements IRestraunt {
   id: number
   address: string
   status: 'open' | 'close'
-  order: Order
-  menu: RestrauntMenuItem[]
+  order: Order | null = null
+  menu: Menu
 
   constructor(address: string) {
     this.id = idGenerator()
     this.address = address
     this.status = 'close'
-    this.menu = []
+    this.menu = new Menu()
   }
 
   acceptOrder(): void {
@@ -41,7 +42,12 @@ export default class Restraunt implements IRestraunt {
     this.status = 'close'
   }
 
-  editMenu(): void {
-
+  editMenu(operation: 'add' | 'remove', item: RestrauntMenuItem): void {
+    if (operation === 'add') {
+      this.menu.addItem(item)
+    }
+    else if (operation === 'remove') {
+      this.menu.removeItem(item)
+    }
   }
 }
