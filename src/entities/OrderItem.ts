@@ -9,7 +9,6 @@ export default class OrderItem {
   restrauntMenuItem: RestrauntMenuItem
 
   constructor(
-    id: number,
     price: number,
     quantity: number,
     restrauntMenuItem: RestrauntMenuItem
