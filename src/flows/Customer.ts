@@ -1,9 +1,8 @@
 import idGenerator from '../lib/idGenerator'
 
 import Order from '../entities/Order'
-import RestrauntMenuItem from '../entities/RestrauntMenuItem'
 
-type IOrderItems = { item: RestrauntMenuItem, quantity: number }
+import { IOrderItems } from '../types'
 
 interface ICustomer {
   createOrder(restrauntId: number, orderItems: IOrderItems[]): Order

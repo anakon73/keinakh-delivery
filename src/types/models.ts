@@ -1,3 +1,5 @@
+import RestrauntMenuItem from '../entities/RestrauntMenuItem'
+
 export type orderStatus =
   'customer_created' |
   'customer_paid' |
@@ -12,3 +14,5 @@ export type orderStatus =
   'delivery_picking' |
   'delivery_delivering' |
   'delivery_complete'
+
+export type IOrderItems = { item: RestrauntMenuItem, quantity: number }
