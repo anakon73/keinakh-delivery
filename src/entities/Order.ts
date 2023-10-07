@@ -1,7 +1,5 @@
 import idGenerator from '../lib/idGenerator'
 
-import menu from '../db/menu'
-
 import { orderStatus } from '../types'
 
 import OrderItem from './OrderItem'
