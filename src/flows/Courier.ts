@@ -12,14 +12,14 @@ interface ICourier {
 
 export default class Courier implements ICourier {
   id: number
-  phone: number
+  phone: string
   status: ''
   coordinates: number
   availableDeliveries: Order[]
   deliveryOrder: Order
   shift: boolean
 
-  constructor(phone: number) {
+  constructor(phone: string) {
     this.id = idGenerator()
     this.phone = phone
     this.coordinates = 0
