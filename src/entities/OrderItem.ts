@@ -9,13 +9,12 @@ export default class OrderItem {
   restrauntMenuItem: RestrauntMenuItem
 
   constructor(
-    price: number,
+    restrauntMenuItem: RestrauntMenuItem,
     quantity: number,
-    restrauntMenuItem: RestrauntMenuItem
   ) {
     this.id = idGenerator()
-    this.price = price
     this.quantity = quantity
     this.restrauntMenuItem = restrauntMenuItem
+    this.price = quantity * restrauntMenuItem.price
   }
 }
