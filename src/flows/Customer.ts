@@ -47,7 +47,7 @@ export default class Customer implements ICustomer {
       this.order = newOrder
       return newOrder
     } else {
-      throw new Error('Not enough money on balance')
+      throw new Error(`Not enough money on balance, need ${newOrder.price}, have ${this.balance}`)
     }
   }
   showHistory(): Order[] {
