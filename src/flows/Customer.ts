@@ -13,7 +13,7 @@ export default class Customer implements ICustomer {
   name: string
   email: string
   adress: string
-  history: Order[] = []
+  history: Order[]
   balance: number
 
   constructor(
@@ -29,6 +29,7 @@ export default class Customer implements ICustomer {
     this.adress = adress
     this.id = idGenerator()
     this.balance = balance
+    this.history = []
   }
 
   createOrder(restrauntId: number): Order {
