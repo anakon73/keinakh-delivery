@@ -1,11 +1,15 @@
 import idGenerator from '../lib/idGenerator'
+import Logger from '../lib/Logger'
 
 import Order from '../entities/Order'
+
+const logger = new Logger()
 
 interface ICourier {
   seeAvailableDeliveries(): Order[]
   acceptOrder(order: Order): void
-  completeDelivery(): void
+  completeDelivery(order: Order): void
+  denyOrder(orde: Order): void
   startShift(): void
   endShift(): void
 }
@@ -13,18 +17,18 @@ interface ICourier {
 export default class Courier implements ICourier {
   id: number
   phone: string
-  status: ''
+  status: 'working' | 'busy' | 'do_not_work'
   coordinates: number
   availableDeliveries: Order[]
   deliveryOrder: Order
-  shift: boolean
 
   constructor(phone: string) {
     this.id = idGenerator()
     this.phone = phone
     this.coordinates = 0
     this.availableDeliveries = []
-    this.shift = false
+    this.status = 'do_not_work'
+    this.deliveryOrder = new Order(0, 0)
   }
 
   addAvailableDeliveries(order: Order) {
@@ -36,18 +40,36 @@ export default class Courier implements ICourier {
   }
 
   acceptOrder(order: Order): void {
-    this.deliveryOrder = order
+    if (this.availableDeliveries.length > 0 && this.availableDeliveries.includes(order)) {
+      this.deliveryOrder = order
+      order.status = 'delivery_picking'
+      this.status = 'busy'
+      order.courierId = this.id
+      const index = this.availableDeliveries.indexOf(order)
+      this.availableDeliveries.splice(index, 1)
+    } else {
+      throw new Error('There is not available orders or order is took')
+    }
   }
 
-  completeDelivery(): void {
+  denyOrder(order: Order): void {
+    order.status = 'delivery_denied'
+    order = new Order(0, 0)
+    this.deliveryOrder = order
+    this.status = 'working'
+  }
 
+  completeDelivery(order: Order): void {
+    order.status = 'delivery_complete'
+    this.deliveryOrder = new Order(0, 0, this.id)
+    this.status = 'working'
   }
 
   startShift(): void {
-    this.shift = false
+    this.status = 'working'
   }
 
   endShift(): void {
-    this.shift = false
+    this.status = 'do_not_work'
   }
 }
