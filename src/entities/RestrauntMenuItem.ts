@@ -1,4 +1,4 @@
-import idGenerator from "../lib/idGenerator"
+import idGenerator from '../lib/idGenerator'
 
 export default class RestrauntMenuItem {
   id: number
@@ -8,7 +8,6 @@ export default class RestrauntMenuItem {
   description: string
 
   constructor(
-    id: number,
     restrauntId: number,
     name: string,
     price: number,
