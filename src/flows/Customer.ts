@@ -45,12 +45,18 @@ export default class Customer implements ICustomer {
     if (this.balance >= newOrder.price) {
       this.order.restrauntId = restrauntId
       this.order = newOrder
+      this.order.status = 'customer_paid'
       return newOrder
     } else {
+      this.order.status = 'customer_cancelled'
       throw new Error(`Not enough money on balance, need ${newOrder.price}, have ${this.balance}`)
     }
   }
   showHistory(): Order[] {
     return this.history
+  }
+
+  addOrderToHistroty(order: Order) {
+    this.history.push(order)
   }
 }
