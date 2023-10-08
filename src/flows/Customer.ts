@@ -1,23 +1,34 @@
 import idGenerator from '../lib/idGenerator'
 
-import Order from '../entities/Order'
+import { type IOrder, Order } from '../entities/Order'
 
 import { IOrderItems } from '../types'
 
-interface ICustomer {
-  createOrder(restrauntId: number, orderItems: IOrderItems[]): Order
-  showHistory(): Order[]
-}
-
-export default class Customer implements ICustomer {
+export interface ICustomer {
   id: number
   phone: string
   name: string
   email: string
   adress: string
-  history: Order[]
+  history: IOrder[]
   balance: number
-  order: Order
+  order: IOrder
+
+  createOrder(restrauntId: number, orderItems: IOrderItems[]): IOrder
+  showHistory(): IOrder[]
+  takeOrder(order: IOrder): void
+  addOrderToHistroty(order: IOrder): void
+}
+
+export class Customer implements ICustomer {
+  id: number
+  phone: string
+  name: string
+  email: string
+  adress: string
+  history: IOrder[]
+  balance: number
+  order: IOrder
 
   constructor(
     phone: string,
@@ -36,7 +47,7 @@ export default class Customer implements ICustomer {
     this.order = new Order(0, 0)
   }
 
-  createOrder(restrauntId: number, orderItems: IOrderItems[]): Order {
+  createOrder(restrauntId: number, orderItems: IOrderItems[]): IOrder {
     const newOrder = new Order(this.id, restrauntId)
     orderItems.forEach((orderItem) => {
       newOrder.addItem(orderItem.item, orderItem.quantity)
@@ -52,11 +63,18 @@ export default class Customer implements ICustomer {
       throw new Error(`Not enough money on balance, need ${newOrder.price}, have ${this.balance}`)
     }
   }
-  showHistory(): Order[] {
+
+  takeOrder(order: IOrder): void {
+    if (order.status === 'delivery_complete') {
+      this.addOrderToHistroty(this.order)
+    }
+  }
+
+  showHistory(): IOrder[] {
     return this.history
   }
 
-  addOrderToHistroty(order: Order) {
+  addOrderToHistroty(order: IOrder): void {
     this.history.push(order)
   }
 }

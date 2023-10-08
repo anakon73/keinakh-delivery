@@ -5,13 +5,22 @@ import { orderStatus } from '../types'
 import OrderItem from './OrderItem'
 import RestrauntMenuItem from './RestrauntMenuItem'
 
-interface IOrder {
+export interface IOrder {
+  id: number
+  status: orderStatus
+  customerId?: number
+  restrauntId: number
+  courierId?: number
+  timestamp: Date
+  itemsList: OrderItem[]
+  price: number
+
   addItem(item: RestrauntMenuItem, quantity: number): void
   removeItem(item: OrderItem): void
   showOrderItems(): OrderItem[]
 }
 
-export default class Order implements IOrder {
+export class Order implements IOrder {
   id: number
   status: orderStatus
   customerId?: number

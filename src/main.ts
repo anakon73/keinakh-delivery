@@ -1,10 +1,10 @@
 import Logger from './lib/Logger'
 
-import Courier from './flows/Courier'
-import Customer from './flows/Customer'
-import Restraunt from './flows/Restraunt'
+import { type ICourier, Courier } from './flows/Courier'
+import { type ICustomer, Customer } from './flows/Customer'
+import { type IRestraunt, Restraunt } from './flows/Restraunt'
 
-import Order from './entities/Order'
+import { type IOrder, Order } from './entities/Order'
 
 import menu from './db/menu'
 
@@ -12,13 +12,11 @@ import { IOrderItems } from './types'
 
 const logger = new Logger()
 
-
-
 class Application {
-  restraunt: Restraunt
-  customer: Customer
-  courier: Courier
-  order: Order
+  restraunt: IRestraunt
+  customer: ICustomer
+  courier: ICourier
+  order: IOrder
 
   constructor() {
     this.restraunt = new Restraunt('')
@@ -29,17 +27,12 @@ class Application {
 
   createRestraunt() {
     this.restraunt = new Restraunt('14th St New York')
-    this.order = new Order(0, 0, 0)
-    this.courier = new Courier('')
-    this.customer = new Customer('', '', '', '', 0)
   }
 
   createMenu() {
     menu.forEach((item) => {
-      if (this.restraunt !== null) {
-        item.restrauntId = this.restraunt.id
-        this.restraunt.editMenu('add', item)
-      }
+      item.restrauntId = this.restraunt.id
+      this.restraunt.editMenu('add', item)
     })
   }
 
@@ -59,7 +52,7 @@ class Application {
     this.createCustomer()
     logger.info('Customer created')
 
-    const currentMenu = this.restraunt!.menu.showMenu()
+    const currentMenu = this.restraunt.menu.showMenu()
 
     const orderItems: IOrderItems[] = [
       {
@@ -80,58 +73,41 @@ class Application {
       },
     ]
 
-    if (this.customer !== null) {
-      try {
-        const newOrder = this.customer?.createOrder(this.restraunt!.id, orderItems)
-        this.order = newOrder
-        this.order.customerId = this.customer!.id
-      } catch (error) {
-        orderItems.pop()
-        const newOrder = this.customer?.createOrder(this.restraunt!.id, orderItems)
-        this.order = newOrder
-        this.order.customerId = this.customer!.id
-      }
+    try {
+      const newOrder = this.customer.createOrder(this.restraunt.id, orderItems)
+      this.order = newOrder
+      this.order.customerId = this.customer.id
+    } catch (error) {
+      orderItems.pop()
+      const newOrder = this.customer.createOrder(this.restraunt.id, orderItems)
+      this.order = newOrder
+      this.order.customerId = this.customer.id
     }
 
     logger.info('Order created')
 
-    if (this.order !== null) {
-      this.restraunt?.denyOrder(this.order)
-      this.order.restrauntId = this.restraunt!.id
-      if (this.order.status === 'kitchen_denied') {
-        this.order!.status = 'kitchen_refunded'
-      } else {
-        this.order!.status = 'kitchen_preparing'
-      }
-    }
 
-    if (this.order.status === 'kitchen_preparing') {
-      this.order.status = 'delivery_pending'
-    }
+    this.restraunt.acceptOrder(this.order)
+    this.order.restrauntId = this.restraunt.id
+
+    if (this.order.status === 'kitchen_refunded') return
 
     this.createCourier()
     logger.info('Courier created')
 
-    this.courier?.startShift()
+    this.courier.startShift()
     logger.info('Courier start shift')
 
-    this.courier?.addAvailableDeliveries(this.order)
+    this.courier.addAvailableDeliveries(this.order)
     logger.info('Order added to available orders')
 
-    this.courier?.acceptOrder(this.order)
-
-    if (this.order.status === 'delivery_picking') {
-      this.order.status = 'delivery_delivering'
-    } else if (this.order.status === 'delivery_denied') {
-      this.order.status = 'delivery_refunded'
-    }
+    this.courier.acceptOrder(this.order)
+    logger.info('Courier accepted order')
 
     this.courier.completeDelivery(this.order)
     logger.info('Delivery complete')
 
-    if (this.order.status === 'delivery_complete') {
-      this.customer.addOrderToHistroty(this.order)
-    }
+    this.customer.takeOrder(this.order)
 
     return
   }

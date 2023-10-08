@@ -1,23 +1,31 @@
-import Menu from '../entities/Menu'
-import Order from '../entities/Order'
+import { type IMenu, Menu } from '../entities/Menu'
+import { type IOrder, Order } from '../entities/Order'
 import RestrauntMenuItem from '../entities/RestrauntMenuItem'
 
 import idGenerator from '../lib/idGenerator'
 
-interface IRestraunt {
-  acceptOrder(order: Order): void
-  denyOrder(order: Order): void
+export interface IRestraunt {
+  id: number
+  address: string
+  status: 'open' | 'close'
+  order: IOrder
+  menu: IMenu
+
+  acceptOrder(order: IOrder): void
+  denyOrder(order: IOrder): void
+  startPrepearing(order: IOrder): void
+  startDenied(order: IOrder): void
   open(): void
   close(): void
   editMenu(operation: 'add' | 'remove', itemName: RestrauntMenuItem): void
 }
 
-export default class Restraunt implements IRestraunt {
+export class Restraunt implements IRestraunt {
   id: number
   address: string
   status: 'open' | 'close'
-  order: Order
-  menu: Menu
+  order: IOrder
+  menu: IMenu
 
   constructor(address: string) {
     this.id = idGenerator()
@@ -27,15 +35,28 @@ export default class Restraunt implements IRestraunt {
     this.order = new Order(0, this.id)
   }
 
-  acceptOrder(order: Order): void {
+  acceptOrder(order: IOrder): void {
     order.status = 'kitchen_accepted'
     this.order = order
+    this.startPrepearing(order)
   }
 
-  denyOrder(order: Order): void {
+  denyOrder(order: IOrder): void {
     order.status = 'kitchen_denied'
-    order = new Order(0, 0)
     this.order = order
+    this.startDenied(order)
+  }
+
+  startPrepearing(order: IOrder): void {
+    if (order.status === 'kitchen_accepted') {
+      order.status = 'kitchen_preparing'
+    }
+  }
+
+  startDenied(order: IOrder): void {
+    if (order.status === 'kitchen_denied') {
+      order.status = 'kitchen_refunded'
+    }
   }
 
   open(): void {
