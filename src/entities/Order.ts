@@ -5,9 +5,26 @@ import { orderStatus } from '../types'
 import OrderItem from './OrderItem'
 import RestrauntMenuItem from './RestrauntMenuItem'
 
-export interface Order {
+export interface ChangeOrderStatus {
+  customerCreated(): void
+  customerPaid(): void
+  customerCancelled(): void
+  kitchenAccepted(): void
+  kitchenDenied(): void
+  kitchenRefunded(): void
+  kitchenPreparing(): void
+  deliveryPending(): void
+  deliveryDenied(): void
+  deliveryRefunded(): void
+  deliveryPicking(): void
+  deliveryDelivering(): void
+  deliveryComplete(): void
+
+  getOrderStatus(): orderStatus
+}
+
+export interface Order extends ChangeOrderStatus {
   id: number
-  status: orderStatus
   customerId?: number
   restrauntId: number
   courierId?: number
@@ -23,6 +40,8 @@ export interface Order {
 export interface OrderImpl extends Order { }
 
 export class OrderImpl {
+  private status: orderStatus
+
   constructor(
     customerId: number,
     restrauntId: number,
@@ -55,6 +74,50 @@ export class OrderImpl {
 
   showOrderItems(): OrderItem[] {
     return this.itemsList
+  }
+
+  customerCreated(): void {
+    this.status = 'customer_created'
+  }
+  customerPaid(): void {
+    this.status = 'customer_paid'
+  }
+  customerCancelled(): void {
+    this.status = 'customer_cancelled'
+  }
+  kitchenAccepted(): void {
+    this.status = 'kitchen_accepted'
+  }
+  kitchenDenied(): void {
+    this.status = 'kitchen_denied'
+  }
+  kitchenRefunded(): void {
+    this.status = 'kitchen_refunded'
+  }
+  kitchenPreparing(): void {
+    this.status = 'kitchen_preparing'
+  }
+  deliveryPending(): void {
+    this.status = 'delivery_pending'
+  }
+  deliveryDenied(): void {
+    this.status = 'delivery_denied'
+  }
+  deliveryRefunded(): void {
+    this.status = 'delivery_refunded'
+  }
+  deliveryPicking(): void {
+    this.status = 'delivery_picking'
+  }
+  deliveryDelivering(): void {
+    this.status = 'delivery_delivering'
+  }
+  deliveryComplete(): void {
+    this.status = 'delivery_complete'
+  }
+
+  getOrderStatus(): orderStatus {
+    return this.status
   }
 }
 

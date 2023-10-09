@@ -58,16 +58,16 @@ export class CustomerImpl {
     if (this.balance >= newOrder.price) {
       this.order.restrauntId = restrauntId
       this.order = newOrder
-      this.order.status = 'customer_paid'
+      this.order.customerPaid()
       return newOrder
     } else {
-      this.order.status = 'customer_cancelled'
+      this.order.customerCancelled()
       throw new Error(`Not enough money on balance, need ${newOrder.price}, have ${this.balance}`)
     }
   }
 
   takeOrder(order: Order): void {
-    if (order.status === 'delivery_complete') {
+    if (order.getOrderStatus() === 'delivery_complete') {
       this.addOrderToHistroty(this.order)
     }
   }

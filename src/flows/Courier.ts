@@ -40,11 +40,11 @@ export class CourierImpl {
   }
 
   acceptOrder(order: Order): void {
-    if (order.status === 'kitchen_preparing') {
-      order.status = 'delivery_pending'
+    if (order.getOrderStatus() === 'kitchen_preparing') {
+      order.deliveryPending()
       if (this.availableDeliveries.length > 0 && this.availableDeliveries.includes(order)) {
         this.deliveryOrder = order
-        order.status = 'delivery_picking'
+        order.deliveryPicking()
         this.status = 'busy'
         order.courierId = this.id
         const index = this.availableDeliveries.indexOf(order)
@@ -53,24 +53,24 @@ export class CourierImpl {
         throw new Error('There is not available orders or order is took')
       }
 
-      if (order.status === 'delivery_picking') {
-        order.status = 'delivery_delivering'
+      if (order.getOrderStatus() === 'delivery_picking') {
+        order.deliveryDelivering()
       }
     }
   }
 
   denyOrder(order: Order): void {
-    order.status = 'delivery_denied'
+    order.deliveryDenied()
     order = new OrderImpl(0, 0)
     this.deliveryOrder = order
     this.status = 'working'
-    if (order.status === 'delivery_denied') {
-      order.status = 'delivery_refunded'
+    if (order.getOrderStatus() === 'delivery_denied') {
+      order.deliveryRefunded()
     }
   }
 
   completeDelivery(order: Order): void {
-    order.status = 'delivery_complete'
+    order.deliveryComplete()
     this.deliveryOrder = new OrderImpl(0, 0, this.id)
     this.status = 'working'
   }

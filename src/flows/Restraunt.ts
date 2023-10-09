@@ -38,26 +38,26 @@ export class RestrauntImpl {
   }
 
   acceptOrder(order: Order): void {
-    order.status = 'kitchen_accepted'
+    order.kitchenAccepted()
     this.order = order
     this.startPrepearing(order)
   }
 
   denyOrder(order: Order): void {
-    order.status = 'kitchen_denied'
+    order.kitchenDenied()
     this.order = order
     this.startDenied(order)
   }
 
   startPrepearing(order: Order): void {
-    if (order.status === 'kitchen_accepted') {
-      order.status = 'kitchen_preparing'
+    if (order.getOrderStatus() === 'kitchen_accepted') {
+      order.kitchenPreparing()
     }
   }
 
   startDenied(order: Order): void {
-    if (order.status === 'kitchen_denied') {
-      order.status = 'kitchen_refunded'
+    if (order.getOrderStatus() === 'kitchen_denied') {
+      order.kitchenRefunded()
     }
   }
 

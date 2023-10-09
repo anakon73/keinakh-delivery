@@ -90,7 +90,7 @@ class Application {
     this.restraunt.acceptOrder(this.order)
     this.order.restrauntId = this.restraunt.id
 
-    if (this.order.status === 'kitchen_refunded') return
+    if (this.order.getOrderStatus() === 'kitchen_refunded') return
 
     this.createCourier()
     logger.info('Courier created')
