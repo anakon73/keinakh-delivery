@@ -1,10 +1,10 @@
 import Logger from './lib/Logger'
 
-import { type ICourier, Courier } from './flows/Courier'
-import { type ICustomer, Customer } from './flows/Customer'
-import { type IRestraunt, Restraunt } from './flows/Restraunt'
+import { type Courier, CourierImpl } from './flows/Courier'
+import { type Customer, CustomerImpl } from './flows/Customer'
+import { type Restraunt, RestrauntImpl } from './flows/Restraunt'
 
-import { type IOrder, Order } from './entities/Order'
+import { type Order, OrderImpl } from './entities/Order'
 
 import menu from './db/menu'
 
@@ -13,20 +13,20 @@ import { IOrderItems } from './types'
 const logger = new Logger()
 
 class Application {
-  restraunt: IRestraunt
-  customer: ICustomer
-  courier: ICourier
-  order: IOrder
+  restraunt: Restraunt
+  customer: Customer
+  courier: Courier
+  order: Order
 
   constructor() {
-    this.restraunt = new Restraunt('')
-    this.order = new Order(0, 0, 0)
-    this.courier = new Courier('')
-    this.customer = new Customer('', '', '', '', 0)
+    this.restraunt = new RestrauntImpl('')
+    this.order = new OrderImpl(0, 0, 0)
+    this.courier = new CourierImpl('')
+    this.customer = new CustomerImpl('', '', '', '', 0)
   }
 
   createRestraunt() {
-    this.restraunt = new Restraunt('14th St New York')
+    this.restraunt = new RestrauntImpl('14th St New York')
   }
 
   createMenu() {
@@ -37,11 +37,11 @@ class Application {
   }
 
   createCustomer() {
-    this.customer = new Customer('+380', 'Nazar', '@gmail.com', 'Zubra', 500)
+    this.customer = new CustomerImpl('+380', 'Nazar', '@gmail.com', 'Zubra', 500)
   }
 
   createCourier() {
-    this.courier = new Courier('+380')
+    this.courier = new CourierImpl('+380')
   }
 
   start() {

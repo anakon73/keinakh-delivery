@@ -1,6 +1,6 @@
 import RestrauntMenuItem from './RestrauntMenuItem'
 
-export interface IMenu {
+export interface Menu {
   itemsList: RestrauntMenuItem[]
 
   addItem(item: RestrauntMenuItem): void
@@ -8,7 +8,9 @@ export interface IMenu {
   showMenu(): RestrauntMenuItem[]
 }
 
-export class Menu implements IMenu {
+export interface MenuImpl extends Menu { }
+
+export class MenuImpl {
   itemsList: RestrauntMenuItem[] = []
 
   addItem(item: RestrauntMenuItem): void {

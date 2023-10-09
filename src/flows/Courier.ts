@@ -1,24 +1,26 @@
 import idGenerator from '../lib/idGenerator'
 
-import { type IOrder, Order } from '../entities/Order'
+import { type Order, OrderImpl } from '../entities/Order'
 
-export interface ICourier {
-  seeAvailableDeliveries(): IOrder[]
-  addAvailableDeliveries(order: IOrder): void
-  acceptOrder(order: IOrder): void
-  completeDelivery(order: IOrder): void
-  denyOrder(orde: IOrder): void
+export interface Courier {
+  seeAvailableDeliveries(): Order[]
+  addAvailableDeliveries(order: Order): void
+  acceptOrder(order: Order): void
+  completeDelivery(order: Order): void
+  denyOrder(orde: Order): void
   startShift(): void
   endShift(): void
 }
 
-export class Courier implements ICourier {
+export interface CourierImpl extends Courier { }
+
+export class CourierImpl {
   id: number
   phone: string
   status: 'working' | 'busy' | 'do_not_work'
   coordinates: number
-  availableDeliveries: IOrder[]
-  deliveryOrder: IOrder
+  availableDeliveries: Order[]
+  deliveryOrder: Order
 
   constructor(phone: string) {
     this.id = idGenerator()
@@ -26,18 +28,18 @@ export class Courier implements ICourier {
     this.coordinates = 0
     this.availableDeliveries = []
     this.status = 'do_not_work'
-    this.deliveryOrder = new Order(0, 0)
+    this.deliveryOrder = new OrderImpl(0, 0)
   }
 
-  addAvailableDeliveries(order: IOrder): void {
+  addAvailableDeliveries(order: Order): void {
     this.availableDeliveries.push(order)
   }
 
-  seeAvailableDeliveries(): IOrder[] {
+  seeAvailableDeliveries(): Order[] {
     return this.availableDeliveries
   }
 
-  acceptOrder(order: IOrder): void {
+  acceptOrder(order: Order): void {
     if (order.status === 'kitchen_preparing') {
       order.status = 'delivery_pending'
       if (this.availableDeliveries.length > 0 && this.availableDeliveries.includes(order)) {
@@ -57,9 +59,9 @@ export class Courier implements ICourier {
     }
   }
 
-  denyOrder(order: IOrder): void {
+  denyOrder(order: Order): void {
     order.status = 'delivery_denied'
-    order = new Order(0, 0)
+    order = new OrderImpl(0, 0)
     this.deliveryOrder = order
     this.status = 'working'
     if (order.status === 'delivery_denied') {
@@ -67,9 +69,9 @@ export class Courier implements ICourier {
     }
   }
 
-  completeDelivery(order: IOrder): void {
+  completeDelivery(order: Order): void {
     order.status = 'delivery_complete'
-    this.deliveryOrder = new Order(0, 0, this.id)
+    this.deliveryOrder = new OrderImpl(0, 0, this.id)
     this.status = 'working'
   }
 

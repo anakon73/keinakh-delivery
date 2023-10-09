@@ -1,59 +1,61 @@
-import { type IMenu, Menu } from '../entities/Menu'
-import { type IOrder, Order } from '../entities/Order'
+import { type Menu, MenuImpl } from '../entities/Menu'
+import { type Order, OrderImpl } from '../entities/Order'
 import RestrauntMenuItem from '../entities/RestrauntMenuItem'
 
 import idGenerator from '../lib/idGenerator'
 
-export interface IRestraunt {
+export interface Restraunt {
   id: number
   address: string
   status: 'open' | 'close'
-  order: IOrder
-  menu: IMenu
+  order: Order
+  menu: Menu
 
-  acceptOrder(order: IOrder): void
-  denyOrder(order: IOrder): void
-  startPrepearing(order: IOrder): void
-  startDenied(order: IOrder): void
+  acceptOrder(order: Order): void
+  denyOrder(order: Order): void
+  startPrepearing(order: Order): void
+  startDenied(order: Order): void
   open(): void
   close(): void
   editMenu(operation: 'add' | 'remove', itemName: RestrauntMenuItem): void
 }
 
-export class Restraunt implements IRestraunt {
+export interface RestrauntImpl extends Restraunt { }
+
+export class RestrauntImpl {
   id: number
   address: string
   status: 'open' | 'close'
-  order: IOrder
-  menu: IMenu
+  order: Order
+  menu: Menu
 
   constructor(address: string) {
     this.id = idGenerator()
     this.address = address
     this.status = 'close'
-    this.menu = new Menu()
-    this.order = new Order(0, this.id)
+    this.menu = new MenuImpl()
+    this.order = new OrderImpl(0, this.id)
   }
 
-  acceptOrder(order: IOrder): void {
+  acceptOrder(order: Order): void {
     order.status = 'kitchen_accepted'
     this.order = order
     this.startPrepearing(order)
   }
 
-  denyOrder(order: IOrder): void {
+  denyOrder(order: Order): void {
     order.status = 'kitchen_denied'
     this.order = order
     this.startDenied(order)
   }
 
-  startPrepearing(order: IOrder): void {
+  startPrepearing(order: Order): void {
     if (order.status === 'kitchen_accepted') {
       order.status = 'kitchen_preparing'
     }
   }
 
-  startDenied(order: IOrder): void {
+  startDenied(order: Order): void {
     if (order.status === 'kitchen_denied') {
       order.status = 'kitchen_refunded'
     }

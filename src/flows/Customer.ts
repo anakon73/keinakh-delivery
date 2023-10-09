@@ -1,34 +1,36 @@
 import idGenerator from '../lib/idGenerator'
 
-import { type IOrder, Order } from '../entities/Order'
+import { type Order, OrderImpl } from '../entities/Order'
 
 import { IOrderItems } from '../types'
 
-export interface ICustomer {
+export interface Customer {
   id: number
   phone: string
   name: string
   email: string
   adress: string
-  history: IOrder[]
+  history: Order[]
   balance: number
-  order: IOrder
+  order: Order
 
-  createOrder(restrauntId: number, orderItems: IOrderItems[]): IOrder
-  showHistory(): IOrder[]
-  takeOrder(order: IOrder): void
-  addOrderToHistroty(order: IOrder): void
+  createOrder(restrauntId: number, orderItems: IOrderItems[]): Order
+  showHistory(): Order[]
+  takeOrder(order: Order): void
+  addOrderToHistroty(order: Order): void
 }
 
-export class Customer implements ICustomer {
+export interface CustomerImpl extends Customer { }
+
+export class CustomerImpl {
   id: number
   phone: string
   name: string
   email: string
   adress: string
-  history: IOrder[]
+  history: Order[]
   balance: number
-  order: IOrder
+  order: Order
 
   constructor(
     phone: string,
@@ -44,11 +46,11 @@ export class Customer implements ICustomer {
     this.id = idGenerator()
     this.balance = balance
     this.history = []
-    this.order = new Order(0, 0)
+    this.order = new OrderImpl(0, 0)
   }
 
-  createOrder(restrauntId: number, orderItems: IOrderItems[]): IOrder {
-    const newOrder = new Order(this.id, restrauntId)
+  createOrder(restrauntId: number, orderItems: IOrderItems[]): Order {
+    const newOrder = new OrderImpl(this.id, restrauntId)
     orderItems.forEach((orderItem) => {
       newOrder.addItem(orderItem.item, orderItem.quantity)
     })
@@ -64,17 +66,17 @@ export class Customer implements ICustomer {
     }
   }
 
-  takeOrder(order: IOrder): void {
+  takeOrder(order: Order): void {
     if (order.status === 'delivery_complete') {
       this.addOrderToHistroty(this.order)
     }
   }
 
-  showHistory(): IOrder[] {
+  showHistory(): Order[] {
     return this.history
   }
 
-  addOrderToHistroty(order: IOrder): void {
+  addOrderToHistroty(order: Order): void {
     this.history.push(order)
   }
 }
